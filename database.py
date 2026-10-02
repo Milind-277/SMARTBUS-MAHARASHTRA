@@ -11,16 +11,23 @@ def get_db_config():
     except ValueError:
         port = 3306
 
+    host = os.getenv("MYSQL_HOST", "localhost")
     config = {
-        "host": os.getenv("MYSQL_HOST", "localhost"),
+        "host": host,
         "port": port,
         "user": os.getenv("MYSQL_USER", "root"),
         "password": os.getenv("MYSQL_PASSWORD", ""),
         "database": os.getenv("MYSQL_DATABASE", "smartbus_mh"),
     }
 
-    ssl_disabled = os.getenv("MYSQL_SSL_DISABLED", "false").strip().lower()
-    if ssl_disabled not in {"1", "true", "yes", "on"}:
+    ssl_disabled_value = os.getenv("MYSQL_SSL_DISABLED")
+    if ssl_disabled_value is None:
+        ssl_disabled_value = "true" if host.lower() in {"localhost", "127.0.0.1"} else "false"
+    ssl_disabled = ssl_disabled_value.strip().lower()
+
+    if ssl_disabled in {"1", "true", "yes", "on"}:
+        config["ssl_disabled"] = True
+    else:
         config["ssl_disabled"] = False
         ssl_ca = os.getenv("MYSQL_SSL_CA")
         if ssl_ca:
