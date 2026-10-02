@@ -1,11 +1,22 @@
 # database.py - SmartBus Maharashtra - Database connection helper
 import os
+import tempfile
+
 import mysql.connector
 from mysql.connector import Error
 
 
+def _write_ca_to_temp_file(cert_text):
+    """Write an Aiven or custom CA bundle to a temp file and return the path."""
+    if not cert_text:
+        return None
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".pem", delete=False) as handle:
+        handle.write(cert_text)
+        return handle.name
+
+
 def get_db_config():
-    """Build a database config from environment variables with safe local defaults."""
+    """Build a database config from environment variables with secure defaults."""
     try:
         port = int(os.getenv("MYSQL_PORT", "3306"))
     except ValueError:
@@ -27,13 +38,18 @@ def get_db_config():
 
     if ssl_disabled in {"1", "true", "yes", "on"}:
         config["ssl_disabled"] = True
-    else:
-        config["ssl_disabled"] = False
-        ssl_ca = os.getenv("MYSQL_SSL_CA")
-        if ssl_ca:
-            config["ssl_ca"] = ssl_ca
-        config["ssl_verify_cert"] = True
-        config["ssl_verify_identity"] = True
+        return config
+
+    config["ssl_disabled"] = False
+    config["ssl_verify_cert"] = os.getenv("MYSQL_SSL_VERIFY_CERT", "true").strip().lower() not in {"0", "false", "no", "off"}
+    config["ssl_verify_identity"] = config["ssl_verify_cert"]
+
+    cert_content = os.getenv("AIVEN_CA_CERT") or os.getenv("MYSQL_SSL_CA")
+    if cert_content:
+        config["ssl_ca"] = _write_ca_to_temp_file(cert_content)
+    elif os.getenv("MYSQL_SSL_CA_PATH"):
+        config["ssl_ca"] = os.getenv("MYSQL_SSL_CA_PATH")
+
     return config
 
 
