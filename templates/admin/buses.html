@@ -1,0 +1,57 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Buses — Admin — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-actions">
+  <h2>Bus Management</h2>
+  <button class="btn btn-primary" onclick="document.getElementById('add-bus').style.display='block'">+ Add Bus</button>
+</div>
+
+<div class="card mb-3" id="add-bus" style="display:none;">
+  <div class="card-header">Add New Bus</div>
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('admin_add_bus') }}">
+      <div class="grid-3">
+        <div class="form-group"><label>Service Number</label><input name="service_number" class="form-control" required placeholder="e.g. SB999"></div>
+        <div class="form-group"><label>Bus Number</label><input name="bus_number" class="form-control" required placeholder="e.g. SB-MH-999"></div>
+        <div class="form-group"><label>Bus Name</label><input name="bus_name" class="form-control" required placeholder="e.g. Deccan Express"></div>
+        <div class="form-group"><label>Bus Type</label>
+          <select name="bus_type" class="form-control">
+            <option>Ordinary</option><option>Express</option><option>AC Seater</option><option>Semi Sleeper</option><option>Sleeper</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Total Seats</label><input type="number" name="total_seats" class="form-control" value="44" min="10" max="60"></div>
+        <div class="form-group"><label>Status</label>
+          <select name="status" class="form-control"><option>Active</option><option>Inactive</option></select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success">Save Bus</button>
+      <button type="button" class="btn btn-secondary" onclick="document.getElementById('add-bus').style.display='none'">Cancel</button>
+    </form>
+  </div>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>ID</th><th>Service No.</th><th>Bus No.</th><th>Bus Name</th><th>Type</th><th>Seats</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for b in buses %}
+      <tr>
+        <td>{{ b.bus_id }}</td>
+        <td><strong>{{ b.service_number }}</strong></td>
+        <td>{{ b.bus_number }}</td>
+        <td>{{ b.bus_name }}</td>
+        <td><span class="badge badge-blue">{{ b.bus_type }}</span></td>
+        <td>{{ b.total_seats }}</td>
+        <td>{% if b.status=='Active' %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-danger">Inactive</span>{% endif %}</td>
+        <td>
+          <a href="{{ url_for('admin_edit_bus', bus_id=b.bus_id) }}" class="btn btn-warning btn-sm">Edit</a>
+          <form method="POST" action="{{ url_for('admin_delete_bus', bus_id=b.bus_id) }}" style="display:inline;" onsubmit="return confirm('Delete this bus?');">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

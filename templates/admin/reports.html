@@ -1,0 +1,55 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Reports — Admin — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-actions"><h2>Reports & Analytics</h2></div>
+<div class="grid-4 mb-4">
+  <div class="stat-card"><div class="stat-icon blue">📋</div><div class="stat-info"><h3>{{ report.total }}</h3><p>Total Bookings</p></div></div>
+  <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-info"><h3>{{ report.confirmed }}</h3><p>Confirmed</p></div></div>
+  <div class="stat-card"><div class="stat-icon red">❌</div><div class="stat-info"><h3>{{ report.cancelled }}</h3><p>Cancelled</p></div></div>
+  <div class="stat-card"><div class="stat-icon green">💰</div><div class="stat-info"><h3>₹{{ report.revenue }}</h3><p>Revenue</p></div></div>
+</div>
+
+<div class="grid-2">
+  <div>
+    <h3 class="fw-600 mb-2" style="font-size:.95rem;">Top Routes by Bookings</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Route</th><th>Bookings</th><th>Revenue</th></tr></thead>
+        <tbody>
+          {% for r in route_stats %}
+          <tr>
+            <td>{{ r.source }} → {{ r.destination }}</td>
+            <td>{{ r.bookings }}</td>
+            <td>₹{{ r.revenue }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div>
+    <h3 class="fw-600 mb-2" style="font-size:.95rem;">Payment Method Summary</h3>
+    <div class="table-wrap mb-3">
+      <table>
+        <thead><tr><th>Method</th><th>Count</th><th>Total</th></tr></thead>
+        <tbody>
+          {% for p in pay_stats %}
+          <tr><td>{{ p.payment_method }}</td><td>{{ p.count }}</td><td>₹{{ p.total }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <h3 class="fw-600 mb-2" style="font-size:.95rem;">Top Buses by Bookings</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Bus</th><th>Type</th><th>Bookings</th><th>Revenue</th></tr></thead>
+        <tbody>
+          {% for b in bus_stats[:10] %}
+          <tr><td>{{ b.service_number }}<br><small>{{ b.bus_name }}</small></td><td>{{ b.bus_type }}</td><td>{{ b.bookings }}</td><td>₹{{ b.revenue }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Routes — Admin — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-actions">
+  <h2>Route Management</h2>
+  <button class="btn btn-primary" onclick="document.getElementById('add-route').style.display='block'">+ Add Route</button>
+</div>
+
+<div class="card mb-3" id="add-route" style="display:none;">
+  <div class="card-header">Add New Route</div>
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('admin_add_route') }}">
+      <div class="grid-3">
+        <div class="form-group"><label>Source</label><input name="source" class="form-control" list="dl" required><datalist id="dl">{% for d in districts %}<option value="{{ d }}">{% endfor %}</datalist></div>
+        <div class="form-group"><label>Destination</label><input name="destination" class="form-control" list="dl" required></div>
+        <div class="form-group"><label>Distance (km)</label><input type="number" name="distance" class="form-control" value="0" step="0.1"></div>
+        <div class="form-group"><label>Duration (e.g. 4h 30m)</label><input name="duration" class="form-control" required placeholder="4h 30m"></div>
+        <div class="form-group"><label>Fare (₹)</label><input type="number" name="fare" class="form-control" step="0.01" required></div>
+      </div>
+      <button type="submit" class="btn btn-success">Save Route</button>
+      <button type="button" class="btn btn-secondary" onclick="document.getElementById('add-route').style.display='none'">Cancel</button>
+    </form>
+  </div>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>ID</th><th>Source</th><th>Destination</th><th>Distance</th><th>Duration</th><th>Fare</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for r in routes %}
+      <tr>
+        <td>{{ r.route_id }}</td>
+        <td>{{ r.source }}</td>
+        <td>{{ r.destination }}</td>
+        <td>{{ r.distance }} km</td>
+        <td>{{ r.duration }}</td>
+        <td>₹{{ r.fare }}</td>
+        <td>
+          <a href="{{ url_for('admin_edit_route', route_id=r.route_id) }}" class="btn btn-warning btn-sm">Edit</a>
+          <form method="POST" action="{{ url_for('admin_delete_route', route_id=r.route_id) }}" style="display:inline;" onsubmit="return confirm('Delete this route?');">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

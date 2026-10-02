@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Search Buses - Smart Bus Booking{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Search Buses 🔍</h1>
+    <p>Enter your travel details to find available buses</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="card" style="max-width:700px; margin:0 auto;">
+      <div class="card-header">Find Your Bus</div>
+      <div class="card-body">
+        <form method="POST" action="{{ url_for('search_bus') }}">
+          <div class="form-group">
+            <label for="source">From (Source City)</label>
+            <input type="text" name="source" id="source" class="form-control"
+                   placeholder="e.g. Nashik" list="cities" required>
+          </div>
+          <div class="form-group">
+            <label for="destination">To (Destination City)</label>
+            <input type="text" name="destination" id="destination" class="form-control"
+                   placeholder="e.g. Pune" list="cities" required>
+          </div>
+          <div class="form-group">
+            <label for="travel_date">Travel Date</label>
+            <input type="date" name="travel_date" id="travel_date" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg">
+            🔍 Search Buses
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Available Cities Hint -->
+    <div class="text-center mt-3">
+      <p class="text-muted" style="font-size:0.85rem;">
+        Available cities: Nashik, Pune, Mumbai, Shirdi
+      </p>
+    </div>
+
+    <datalist id="cities">
+      <option value="Nashik">
+      <option value="Pune">
+      <option value="Mumbai">
+      <option value="Shirdi">
+    </datalist>
+  </div>
+</section>
+
+<script>
+  // Set minimum date to today
+  var today = new Date().toISOString().split('T')[0];
+  document.getElementById('travel_date').min = today;
+  document.getElementById('travel_date').value = today;
+</script>
+{% endblock %}

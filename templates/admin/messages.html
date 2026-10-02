@@ -1,0 +1,21 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Messages — Admin — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-actions"><h2>Contact Messages</h2></div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Message</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for m in messages %}
+      <tr>
+        <td>{{ m.message_id }}</td>
+        <td>{{ m.name }}</td>
+        <td>{{ m.email }}</td>
+        <td style="max-width:350px;white-space:pre-wrap;word-break:break-word;">{{ m.message }}</td>
+        <td style="font-size:.8rem;">{{ m.created_at.strftime('%d %b %Y %H:%M') if m.created_at else '' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

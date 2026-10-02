@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}Payment — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Payment</h1>
+    <p>Step 5 of 5 — Choose your payment method</p>
+  </div>
+</div>
+<div class="container section">
+  <div class="steps mb-3">
+    <div class="step done">1. Search</div>
+    <div class="step done">2. Seats</div>
+    <div class="step done">3. Details</div>
+    <div class="step done">4. Review</div>
+    <div class="step active">5. Payment</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:1.5rem;align-items:start;">
+    <div class="card">
+      <div class="card-header">Select Payment Method</div>
+      <div class="card-body">
+        <form method="POST" action="{{ url_for('process_payment') }}" id="pay-form">
+          <input type="hidden" name="schedule_id" value="{{ schedule.schedule_id }}">
+
+          <!-- Method selection -->
+          <ul class="pay-method">
+            <li>
+              <input type="radio" name="payment_method" id="m-upi" value="UPI" checked>
+              <label for="m-upi">📱 UPI Payment</label>
+            </li>
+            <li>
+              <input type="radio" name="payment_method" id="m-card" value="Card">
+              <label for="m-card">💳 Debit / Credit Card</label>
+            </li>
+            <li>
+              <input type="radio" name="payment_method" id="m-nb" value="Net Banking">
+              <label for="m-nb">🏦 Net Banking</label>
+            </li>
+            <li>
+              <input type="radio" name="payment_method" id="m-cash" value="Cash">
+              <label for="m-cash">💵 Cash at Counter / Pay Later</label>
+            </li>
+          </ul>
+
+          <!-- UPI panel -->
+          <div class="pay-panel mt-3" id="panel-upi" style="display:block;">
+            <div class="form-group">
+              <label>UPI ID</label>
+              <input type="text" name="upi_id" class="form-control" placeholder="e.g. name@upi">
+            </div>
+            <p class="text-muted" style="font-size:0.8rem;">Enter your UPI ID and click Pay Now to complete the payment simulation.</p>
+          </div>
+
+          <!-- Card panel -->
+          <div class="pay-panel mt-3" id="panel-card" style="display:none;">
+            <div class="form-group">
+              <label>Cardholder Name</label>
+              <input type="text" name="card_name" class="form-control" placeholder="Name on card">
+            </div>
+            <div class="form-group">
+              <label>Card Number</label>
+              <input type="text" name="card_number" class="form-control" placeholder="•••• •••• •••• ••••" maxlength="19">
+            </div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Expiry (MM/YY)</label>
+                <input type="text" name="card_expiry" class="form-control" placeholder="MM/YY" maxlength="5">
+              </div>
+              <div class="form-group">
+                <label>CVV</label>
+                <input type="password" name="card_cvv" class="form-control" placeholder="•••" maxlength="4">
+              </div>
+            </div>
+            <p class="text-muted" style="font-size:0.8rem;">Card details are used only for simulation. No real transaction is processed and card data is not stored.</p>
+          </div>
+
+          <!-- Net Banking panel -->
+          <div class="pay-panel mt-3" id="panel-net-banking" style="display:none;">
+            <div class="form-group">
+              <label>Select Bank</label>
+              <select name="bank_name" class="form-control">
+                <option>SBI</option>
+                <option>HDFC Bank</option>
+                <option>ICICI Bank</option>
+                <option>Axis Bank</option>
+                <option>Bank of Maharashtra</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <p class="text-muted" style="font-size:0.8rem;">This is a simulated net banking flow. No real bank connection is made.</p>
+          </div>
+
+          <!-- Cash panel -->
+          <div class="pay-panel mt-3" id="panel-cash" style="display:none;">
+            <div style="background:#fef9c3;border-radius:8px;padding:1rem;border-left:4px solid #d97706;">
+              <strong>Pay at Counter</strong>
+              <p style="font-size:0.85rem;margin-top:0.4rem;">Your seat will be reserved. Please pay at the bus counter before departure. Payment status will show as <em>Pending</em>.</p>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-success btn-lg btn-block mt-3">Confirm &amp; Pay ₹{{ total_amount }}</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="summary-box">
+      <h4 class="fw-700 mb-2" style="font-size:0.9rem;">Order Summary</h4>
+      <div class="sum-row"><span>Route</span><strong>{{ schedule.source }} → {{ schedule.destination }}</strong></div>
+      <div class="sum-row"><span>Bus</span><strong>{{ schedule.bus_name }}</strong></div>
+      <div class="sum-row"><span>Date</span><strong>{{ schedule.travel_date }}</strong></div>
+      <div class="sum-row"><span>Seats</span><strong>{{ selected_seats|length }}</strong></div>
+      <div class="sum-row sum-total"><span>Total</span><span>₹{{ total_amount }}</span></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

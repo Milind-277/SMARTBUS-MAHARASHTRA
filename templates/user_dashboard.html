@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard - Smart Bus Booking{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Welcome, {{ session.user_name }}! 👋</h1>
+    <p>Manage your bookings and explore available buses</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- Quick Actions -->
+    <div class="grid-3 mb-4">
+      <a href="{{ url_for('search_bus') }}" class="stat-card" style="text-decoration:none; cursor:pointer;">
+        <div class="stat-icon blue">🔍</div>
+        <div class="stat-info">
+          <h3 style="font-size:1rem;">Search Buses</h3>
+          <p>Find available buses for your route</p>
+        </div>
+      </a>
+      <a href="{{ url_for('my_bookings') }}" class="stat-card" style="text-decoration:none;">
+        <div class="stat-icon green">🎫</div>
+        <div class="stat-info">
+          <h3 style="font-size:1rem;">My Bookings</h3>
+          <p>View all your past and upcoming trips</p>
+        </div>
+      </a>
+      <a href="{{ url_for('profile') }}" class="stat-card" style="text-decoration:none;">
+        <div class="stat-icon orange">👤</div>
+        <div class="stat-info">
+          <h3 style="font-size:1rem;">My Profile</h3>
+          <p>View and update your account details</p>
+        </div>
+      </a>
+    </div>
+
+    <!-- Recent Bookings -->
+    <div class="card">
+      <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+        <span>🕐 Recent Bookings</span>
+        <a href="{{ url_for('my_bookings') }}" style="color:white; font-size:0.82rem;">View All →</a>
+      </div>
+      <div class="card-body" style="padding:0;">
+        {% if recent_bookings %}
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Bus</th>
+                <th>Route</th>
+                <th>Travel Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for b in recent_bookings %}
+              <tr>
+                <td><span class="badge badge-primary">{{ b.booking_code }}</span></td>
+                <td>{{ b.bus_name }}</td>
+                <td>{{ b.source }} → {{ b.destination }}</td>
+                <td>{{ b.travel_date }}</td>
+                <td><strong>₹{{ '%.2f'|format(b.total_amount) }}</strong></td>
+                <td>
+                  {% if b.booking_status == 'Confirmed' %}
+                    <span class="badge badge-success">Confirmed</span>
+                  {% else %}
+                    <span class="badge badge-danger">Cancelled</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <div class="icon">🎫</div>
+          <h3>No bookings yet</h3>
+          <p>You haven't made any bookings. <a href="{{ url_for('search_bus') }}">Search for buses</a> to get started!</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

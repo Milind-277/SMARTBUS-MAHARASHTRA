@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin — SmartBus Maharashtra{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="admin-wrap">
+  <aside class="sidebar">
+
+    <div class="sidebar-brand">
+      <h4>SmartBus MH</h4>
+      <p>Admin Panel</p>
+    </div>
+    <ul class="sidebar-nav">
+      <li><a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if request.endpoint == 'admin_dashboard' else '' }}">📊 Dashboard</a></li>
+      <div class="sidebar-section">Management</div>
+      <li><a href="{{ url_for('admin_users') }}"     class="{{ 'active' if request.endpoint == 'admin_users' else '' }}">👥 Users</a></li>
+      <li><a href="{{ url_for('admin_buses') }}"     class="{{ 'active' if request.endpoint in ['admin_buses','admin_edit_bus'] else '' }}">🚌 Buses</a></li>
+      <li><a href="{{ url_for('admin_routes') }}"    class="{{ 'active' if request.endpoint in ['admin_routes','admin_edit_route'] else '' }}">🗺 Routes</a></li>
+      <li><a href="{{ url_for('admin_schedules') }}" class="{{ 'active' if request.endpoint in ['admin_schedules','admin_edit_schedule'] else '' }}">🕐 Schedules</a></li>
+      <div class="sidebar-section">Transactions</div>
+      <li><a href="{{ url_for('admin_bookings') }}"  class="{{ 'active' if request.endpoint == 'admin_bookings' else '' }}">📋 Bookings</a></li>
+      <li><a href="{{ url_for('admin_payments') }}"  class="{{ 'active' if request.endpoint == 'admin_payments' else '' }}">💳 Payments</a></li>
+      <div class="sidebar-section">Reports</div>
+      <li><a href="{{ url_for('admin_reports') }}"   class="{{ 'active' if request.endpoint == 'admin_reports' else '' }}">📈 Reports</a></li>
+      <li><a href="{{ url_for('admin_messages') }}"  class="{{ 'active' if request.endpoint == 'admin_messages' else '' }}">✉ Messages</a></li>
+      <div class="sidebar-section">Account</div>
+      <li><a href="{{ url_for('admin_logout') }}">⬅ Logout</a></li>
+    </ul>
+
+  </aside>
+  <main class="admin-main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="alert alert-{{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

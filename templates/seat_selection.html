@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Select Seats — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Select Your Seats</h1>
+    <p>{{ schedule.source }} → {{ schedule.destination }} &nbsp;·&nbsp; {{ schedule.travel_date }} &nbsp;·&nbsp; Departs {{ schedule.departure_time }}</p>
+  </div>
+</div>
+<div class="container section">
+  <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;">
+    <!-- Seat Map -->
+    <div>
+      <div class="seat-bus">
+        <div class="driver-bar">DRIVER ►</div>
+        <form method="POST" action="{{ url_for('passenger_details') }}" id="seat-form">
+          <input type="hidden" name="schedule_id" value="{{ schedule.schedule_id }}">
+          {% set cols = 4 %}
+          {% set rows = (all_seats|length / cols)|round(0,'ceil')|int %}
+          {% for r in range(rows) %}
+          <div class="seat-row">
+            {% for c in range(cols) %}
+              {% set idx = r * cols + c %}
+              {% if idx < all_seats|length %}
+                {% set sn = all_seats[idx] %}
+                {% if c == 2 %}<div class="aisle"></div>{% endif %}
+                {% if sn in booked_seats %}
+                  <div class="seat booked" title="Seat {{ sn }} — Booked">{{ sn }}</div>
+                {% else %}
+                  <label class="seat available" title="Seat {{ sn }}">
+                    <input type="checkbox" name="selected_seats" value="{{ sn }}" style="display:none;" onchange="updateSelection()">
+                    {{ sn }}
+                  </label>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </form>
+      </div>
+      <div class="seat-legend">
+        <span class="legend-item"><span class="legend-box a"></span> Available</span>
+        <span class="legend-item"><span class="legend-box s"></span> Selected</span>
+        <span class="legend-item"><span class="legend-box b" style="background:#e5e7eb;"></span> Booked</span>
+      </div>
+    </div>
+
+    <!-- Booking summary -->
+    <div>
+      <div class="card">
+        <div class="card-header">Booking Summary</div>
+        <div class="card-body">
+          <div class="sum-row"><span>Route</span><strong>{{ schedule.source }} → {{ schedule.destination }}</strong></div>
+          <div class="sum-row"><span>Bus</span><strong>{{ schedule.bus_name }} ({{ schedule.service_number }})</strong></div>
+          <div class="sum-row"><span>Type</span><strong>{{ schedule.bus_type }}</strong></div>
+          <div class="sum-row"><span>Date</span><strong>{{ schedule.travel_date }}</strong></div>
+          <div class="sum-row"><span>Departure</span><strong>{{ schedule.departure_time }}</strong></div>
+          <div class="sum-row"><span>Fare/seat</span><strong>₹{{ schedule.fare }}</strong></div>
+          <hr style="margin:0.75rem 0;border:none;border-top:1px solid #e5e7eb;">
+          <div id="selected-info" class="text-muted" style="font-size:0.85rem;">No seats selected yet.</div>
+          <div class="sum-row sum-total mt-2"><span>Total</span><span id="total-fare">₹0</span></div>
+          <button type="submit" form="seat-form" class="btn btn-primary btn-lg btn-block mt-3" id="continue-btn" disabled>Continue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+var fare = {{ schedule.fare }};
+function updateSelection() {
+  var checked = document.querySelectorAll('input[name=selected_seats]:checked');
+  var labels  = document.querySelectorAll('.seat.available');
+  labels.forEach(function(l){
+    var inp = l.querySelector('input');
+    l.classList.toggle('selected', inp && inp.checked);
+  });
+  var seats = Array.from(checked).map(function(i){return i.value;});
+  var total = seats.length * fare;
+  document.getElementById('selected-info').innerHTML =
+    seats.length ? 'Selected: <strong>' + seats.join(', ') + '</strong>' : 'No seats selected yet.';
+  document.getElementById('total-fare').textContent = '₹' + total.toFixed(2);
+  document.getElementById('continue-btn').disabled = seats.length === 0;
+}
+</script>
+{% endblock %}

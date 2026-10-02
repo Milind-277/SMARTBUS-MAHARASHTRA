@@ -1,0 +1,32 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Users — Admin — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-actions"><h2>User Management</h2></div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Mobile</th><th>Role</th><th>Status</th><th>Joined</th><th>Action</th></tr></thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.user_id }}</td>
+        <td>{{ u.name }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.mobile }}</td>
+        <td><span class="badge {{ 'badge-orange' if u.role=='admin' else 'badge-blue' }}">{{ u.role }}</span></td>
+        <td>{% if u.is_active %}<span class="badge badge-success">Active</span>{% else %}<span class="badge badge-danger">Inactive</span>{% endif %}</td>
+        <td style="font-size:.8rem;">{{ u.created_at.strftime('%d %b %Y') if u.created_at else '' }}</td>
+        <td>
+          {% if u.role != 'admin' %}
+          <form method="POST" action="{{ url_for('admin_toggle_user', user_id=u.user_id) }}" style="display:inline;">
+            <button type="submit" class="btn btn-sm {{ 'btn-danger' if u.is_active else 'btn-success' }}">
+              {{ 'Deactivate' if u.is_active else 'Activate' }}
+            </button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

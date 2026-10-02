@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Booking Confirmed - Smart Bus Booking{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:700px;">
+    <!-- Success Banner -->
+    <div style="background:linear-gradient(135deg, #16a34a, #15803d); border-radius:var(--radius-lg); padding:2rem; text-align:center; color:white; margin-bottom:2rem;">
+      <div style="font-size:3.5rem;">✅</div>
+      <h1 style="font-size:1.8rem; font-weight:800; margin:0.5rem 0;">Booking Confirmed!</h1>
+      <p style="opacity:0.9;">Your ticket has been booked successfully.</p>
+      <div style="background:rgba(255,255,255,0.15); border-radius:8px; padding:0.75rem 1.5rem; display:inline-block; margin-top:1rem;">
+        <div style="font-size:0.8rem; opacity:0.8;">BOOKING ID</div>
+        <div style="font-size:1.6rem; font-weight:800; letter-spacing:0.1em;">{{ booking.booking_code }}</div>
+      </div>
+    </div>
+
+    <!-- Booking Details -->
+    <div class="card mb-3">
+      <div class="card-header">Booking Details</div>
+      <div class="card-body">
+        <div class="grid-2" style="gap:1rem; font-size:0.9rem;">
+          <div><p class="text-muted">Passenger</p><p class="fw-600">{{ booking.user_name }}</p></div>
+          <div><p class="text-muted">Bus</p><p class="fw-600">{{ booking.bus_name }} ({{ booking.bus_number }})</p></div>
+          <div><p class="text-muted">Route</p><p class="fw-600">{{ booking.source }} → {{ booking.destination }}</p></div>
+          <div><p class="text-muted">Travel Date</p><p class="fw-600">{{ booking.travel_date }}</p></div>
+          <div><p class="text-muted">Departure</p><p class="fw-600">{{ booking.departure_time }}</p></div>
+          <div><p class="text-muted">Arrival</p><p class="fw-600">{{ booking.arrival_time }}</p></div>
+          <div><p class="text-muted">Payment Method</p><p class="fw-600">{{ booking.payment_method }}</p></div>
+          <div><p class="text-muted">Total Amount</p><p class="fw-bold text-primary" style="font-size:1.1rem;">₹{{ '%.2f'|format(booking.total_amount) }}</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seats -->
+    <div class="card mb-3">
+      <div class="card-header">Passenger & Seat Details</div>
+      <div class="card-body" style="padding:0;">
+        <table>
+          <thead><tr><th>Seat</th><th>Passenger</th><th>Age</th><th>Gender</th><th>Mobile</th></tr></thead>
+          <tbody>
+            {% for s in seats %}
+            <tr>
+              <td><span class="badge badge-primary">{{ s.seat_number }}</span></td>
+              <td>{{ s.passenger_name }}</td>
+              <td>{{ s.passenger_age }}</td>
+              <td>{{ s.passenger_gender }}</td>
+              <td>{{ s.passenger_mobile }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex gap-2" style="justify-content:center; flex-wrap:wrap;">
+      <a href="{{ url_for('ticket', booking_code=booking.booking_code) }}" class="btn btn-primary btn-lg">
+        🎫 View Ticket
+      </a>
+      <a href="{{ url_for('my_bookings') }}" class="btn btn-secondary btn-lg">
+        📋 My Bookings
+      </a>
+      <a href="{{ url_for('search_bus') }}" class="btn btn-outline btn-lg">
+        🔍 Book Another
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

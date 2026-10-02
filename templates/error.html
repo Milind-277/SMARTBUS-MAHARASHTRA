@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}{{ error_code }} Error - Smart Bus Booking{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container text-center" style="padding: 4rem 0;">
+    <div style="font-size:5rem;">😕</div>
+    <h1 style="font-size:4rem; font-weight:800; color:var(--primary); margin:0.5rem 0;">{{ error_code }}</h1>
+    <h2 style="font-size:1.3rem; color:var(--gray-700);">{{ error_message }}</h2>
+    <p class="text-muted mt-2">Sorry, something went wrong. Please try again.</p>
+    <div class="mt-4" style="display:flex; gap:1rem; justify-content:center;">
+      <a href="{{ url_for('index') }}" class="btn btn-primary">🏠 Go Home</a>
+      <a href="javascript:history.back()" class="btn btn-secondary">← Go Back</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

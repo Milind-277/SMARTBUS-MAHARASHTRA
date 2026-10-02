@@ -1,0 +1,37 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Dashboard — Admin — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-actions">
+  <h2>Dashboard</h2>
+  <span class="text-muted" style="font-size:.83rem;">Welcome, {{ session.user_name }}</span>
+</div>
+<div class="stats-grid">
+  <div class="stat-card"><div class="stat-icon blue">👥</div><div class="stat-info"><h3>{{ stats.users }}</h3><p>Users</p></div></div>
+  <div class="stat-card"><div class="stat-icon orange">🚌</div><div class="stat-info"><h3>{{ stats.buses }}</h3><p>Buses</p></div></div>
+  <div class="stat-card"><div class="stat-icon green">🗺</div><div class="stat-info"><h3>{{ stats.routes }}</h3><p>Routes</p></div></div>
+  <div class="stat-card"><div class="stat-icon yellow">🕐</div><div class="stat-info"><h3>{{ stats.schedules }}</h3><p>Schedules</p></div></div>
+  <div class="stat-card"><div class="stat-icon blue">📋</div><div class="stat-info"><h3>{{ stats.bookings }}</h3><p>Total Bookings</p></div></div>
+  <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-info"><h3>{{ stats.confirmed }}</h3><p>Confirmed</p></div></div>
+  <div class="stat-card"><div class="stat-icon red">❌</div><div class="stat-info"><h3>{{ stats.cancelled }}</h3><p>Cancelled</p></div></div>
+  <div class="stat-card"><div class="stat-icon yellow">⏳</div><div class="stat-info"><h3>{{ stats.pending_pay }}</h3><p>Pending Payments</p></div></div>
+  <div class="stat-card"><div class="stat-icon green">💰</div><div class="stat-info"><h3>₹{{ stats.revenue }}</h3><p>Total Revenue</p></div></div>
+</div>
+<h3 class="fw-600 mb-2" style="font-size:.95rem;">Recent Bookings</h3>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Booking ID</th><th>User</th><th>Route</th><th>Travel Date</th><th>Amount</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for b in recent %}
+      <tr>
+        <td><strong>{{ b.booking_code }}</strong></td>
+        <td>{{ b.user_name }}</td>
+        <td>{{ b.source }} → {{ b.destination }}</td>
+        <td>{{ b.travel_date }}</td>
+        <td>₹{{ b.total_amount }}</td>
+        <td>{% if b.booking_status=='Confirmed' %}<span class="badge badge-success">Confirmed</span>{% else %}<span class="badge badge-danger">Cancelled</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}SmartBus Maharashtra — Book Bus Tickets Online{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="container">
+    <h1>Travel across Maharashtra<br>with ease.</h1>
+    <p>Search buses between any two districts, choose your seat,<br>pay securely and receive your ticket — all in one place.</p>
+
+    <div class="hero-search">
+      <form action="{{ url_for('search') }}" method="POST" style="display:contents;">
+        <div class="form-group" style="margin:0;">
+          <label for="h-from">From</label>
+          <input id="h-from" name="source" class="form-control" list="district-list" placeholder="e.g. Nashik" required>
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label for="h-to">To</label>
+          <input id="h-to" name="destination" class="form-control" list="district-list" placeholder="e.g. Pune" required>
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label for="h-date">Travel Date</label>
+          <input id="h-date" name="travel_date" type="date" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg" style="align-self:flex-end;">Search Buses</button>
+      </form>
+    </div>
+
+    <datalist id="district-list">
+      {% for d in districts %}<option value="{{ d }}">{% endfor %}
+    </datalist>
+  </div>
+</section>
+
+<!-- Stats bar -->
+<section class="stats-bar">
+  <div class="container">
+    <div class="stats-bar-grid">
+      <div><h3>{{ stats.total_buses }}+</h3><p>Buses Operating</p></div>
+      <div><h3>{{ stats.total_routes }}+</h3><p>Routes Covered</p></div>
+      <div><h3>{{ stats.total_trips }}+</h3><p>Trips Booked</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Popular routes -->
+<section class="section">
+  <div class="container">
+    <h2 class="fw-700 mb-3">Popular Routes</h2>
+    <div class="grid-3" style="gap:0.75rem;">
+      {% set popular = [
+        ('Mumbai','Pune','3h 0m','₹280'),('Pune','Nashik','4h 30m','₹350'),
+        ('Mumbai','Nashik','3h 30m','₹320'),('Nagpur','Amravati','3h 0m','₹230'),
+        ('Pune','Kolhapur','4h 30m','₹360'),('Nashik','Nagpur','12h 0m','₹820'),
+        ('Chhatrapati Sambhajinagar','Pune','4h 30m','₹380'),('Nanded','Mumbai','11h 0m','₹780'),
+        ('Kolhapur','Sangli','1h 30m','₹85')
+      ] %}
+      {% for src,dst,dur,fare in popular %}
+      <a href="{{ url_for('search') }}" class="route-chip" style="text-decoration:none;color:inherit;">
+        <div>
+          <div class="name">{{ src }} → {{ dst }}</div>
+          <div class="info">{{ dur }} &nbsp;|&nbsp; from {{ fare }}</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section" style="background:#fff;padding:3rem 0;">
+  <div class="container">
+    <h2 class="fw-700 text-center mb-4">How SmartBus Works</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Search Buses</h3>
+        <p>Enter your origin, destination and travel date to find available buses across Maharashtra.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💺</div>
+        <h3>Choose Your Seat</h3>
+        <p>View the live seat map and pick the seats you want. Book multiple seats in one go.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💳</div>
+        <h3>Pay Conveniently</h3>
+        <p>Pay via UPI, card, net banking or opt for cash at the counter — your choice.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎫</div>
+        <h3>Manage Tickets</h3>
+        <p>View, print or cancel your tickets anytime from My Trips — even after logging out and back in.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

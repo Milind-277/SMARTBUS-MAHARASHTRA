@@ -1,0 +1,40 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Bookings — Admin — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-actions">
+  <h2>Booking Management</h2>
+  <div class="d-flex gap-1">
+    <a href="?status=All"       class="btn btn-sm {{ 'btn-primary' if status_filter=='All' else 'btn-secondary' }}">All</a>
+    <a href="?status=Confirmed" class="btn btn-sm {{ 'btn-success' if status_filter=='Confirmed' else 'btn-secondary' }}">Confirmed</a>
+    <a href="?status=Cancelled" class="btn btn-sm {{ 'btn-danger' if status_filter=='Cancelled' else 'btn-secondary' }}">Cancelled</a>
+  </div>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Booking ID</th><th>Ticket No.</th><th>User</th><th>Route</th><th>Travel Date</th><th>Bus</th><th>Seats</th><th>Amount</th><th>Payment</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td><strong>{{ b.booking_code }}</strong><br><small class="text-muted">{{ b.booking_date.strftime('%d %b %Y') if b.booking_date else '' }}</small></td>
+        <td><small>{{ b.ticket_number or '—' }}</small></td>
+        <td>{{ b.user_name }}<br><small class="text-muted">{{ b.user_email }}</small></td>
+        <td>{{ b.source }} → {{ b.destination }}</td>
+        <td>{{ b.travel_date }}</td>
+        <td>{{ b.service_number }}<br><small>{{ b.bus_name }}</small></td>
+        <td>{{ b.seats }}</td>
+        <td>₹{{ b.total_amount }}</td>
+        <td>
+          {% if b.payment_status=='Paid' %}<span class="badge badge-success">Paid</span>
+          {% else %}<span class="badge badge-warning">Pending</span>{% endif %}
+          <br><small class="text-muted">{{ b.payment_method }}</small>
+        </td>
+        <td>
+          {% if b.booking_status=='Confirmed' %}<span class="badge badge-success">Confirmed</span>
+          {% else %}<span class="badge badge-danger">Cancelled</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

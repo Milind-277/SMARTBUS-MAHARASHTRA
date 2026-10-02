@@ -1,0 +1,21 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Edit Route — Admin — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-actions">
+  <h2>Edit Route</h2>
+  <a href="{{ url_for('admin_routes') }}" class="btn btn-secondary">&larr; Back</a>
+</div>
+<div class="card" style="max-width:550px;">
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('admin_edit_route', route_id=route.route_id) }}">
+      <div class="form-group"><label>Source</label><input name="source" class="form-control" list="dl" value="{{ route.source }}" required><datalist id="dl">{% for d in districts %}<option value="{{ d }}">{% endfor %}</datalist></div>
+      <div class="form-group"><label>Destination</label><input name="destination" class="form-control" list="dl" value="{{ route.destination }}" required></div>
+      <div class="form-group"><label>Distance (km)</label><input type="number" name="distance" class="form-control" value="{{ route.distance }}" step="0.1"></div>
+      <div class="form-group"><label>Duration</label><input name="duration" class="form-control" value="{{ route.duration }}" required></div>
+      <div class="form-group"><label>Fare (₹)</label><input type="number" name="fare" class="form-control" value="{{ route.fare }}" step="0.01"></div>
+      <button type="submit" class="btn btn-primary">Update Route</button>
+      <a href="{{ url_for('admin_routes') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

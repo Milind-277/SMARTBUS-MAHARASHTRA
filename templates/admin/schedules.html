@@ -1,0 +1,58 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Schedules — Admin — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-actions">
+  <h2>Schedule Management</h2>
+  <button class="btn btn-primary" onclick="document.getElementById('add-sch').style.display='block'">+ Add Schedule</button>
+</div>
+<div class="card mb-3" id="add-sch" style="display:none;">
+  <div class="card-header">Add New Schedule</div>
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('admin_add_schedule') }}">
+      <div class="grid-3">
+        <div class="form-group"><label>Bus</label>
+          <select name="bus_id" class="form-control" required>
+            <option value="">-- Select Bus --</option>
+            {% for b in buses %}<option value="{{ b.bus_id }}">{{ b.service_number }} — {{ b.bus_name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group"><label>Route</label>
+          <select name="route_id" class="form-control" required>
+            <option value="">-- Select Route --</option>
+            {% for r in routes %}<option value="{{ r.route_id }}">{{ r.source }} → {{ r.destination }} (₹{{ r.fare }})</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group"><label>Travel Date</label><input type="date" name="travel_date" class="form-control" required></div>
+        <div class="form-group"><label>Departure Time</label><input type="time" name="departure_time" class="form-control" required></div>
+        <div class="form-group"><label>Arrival Time</label><input type="time" name="arrival_time" class="form-control" required></div>
+      </div>
+      <button type="submit" class="btn btn-success">Save Schedule</button>
+      <button type="button" class="btn btn-secondary" onclick="document.getElementById('add-sch').style.display='none'">Cancel</button>
+    </form>
+  </div>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>ID</th><th>Bus</th><th>Route</th><th>Date</th><th>Departure</th><th>Arrival</th><th>Fare</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for s in schedules %}
+      <tr>
+        <td>{{ s.schedule_id }}</td>
+        <td><strong>{{ s.service_number }}</strong><br><small>{{ s.bus_name }}</small></td>
+        <td>{{ s.source }} → {{ s.destination }}</td>
+        <td>{{ s.travel_date }}</td>
+        <td>{{ s.departure_time }}</td>
+        <td>{{ s.arrival_time }}</td>
+        <td>₹{{ s.fare }}</td>
+        <td>
+          <a href="{{ url_for('admin_edit_schedule', schedule_id=s.schedule_id) }}" class="btn btn-warning btn-sm">Edit</a>
+          <form method="POST" action="{{ url_for('admin_delete_schedule', schedule_id=s.schedule_id) }}" style="display:inline;" onsubmit="return confirm('Delete this schedule?');">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

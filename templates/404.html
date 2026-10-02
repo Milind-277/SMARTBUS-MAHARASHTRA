@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Page Not Found — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="container section text-center" style="padding-top:4rem;">
+  <div style="font-size:4rem;">🔍</div>
+  <h1 class="fw-700 mt-2" style="font-size:1.8rem;">Page Not Found</h1>
+  <p class="text-muted mt-1 mb-3">The page you are looking for does not exist or has been moved.</p>
+  <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">Go to Homepage</a>
+  <a href="{{ url_for('search') }}" class="btn btn-secondary btn-lg">Search Buses</a>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Ticket {{ booking.booking_code }} — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="container section">
+  <div class="no-print" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+    <a href="{{ url_for('my_trips') }}" class="btn btn-secondary">&larr; My Trips</a>
+    <button onclick="window.print()" class="btn btn-primary">🖨 Print Ticket</button>
+  </div>
+
+  <div class="ticket-wrap">
+    <div class="ticket-header">
+      <div>
+        <h2>SmartBus Maharashtra</h2>
+        <p style="opacity:.75;font-size:.8rem;margin-top:.2rem;">{{ booking.ticket_number or 'TKT-' + booking.booking_code }}</p>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:.78rem;opacity:.75;margin-bottom:.2rem;">BOOKING ID</div>
+        <div class="ticket-id">{{ booking.booking_code }}</div>
+      </div>
+    </div>
+    <div class="ticket-body">
+      <div class="ticket-route">
+        {{ booking.source }} → {{ booking.destination }}
+      </div>
+      <div class="ticket-row">
+        <div class="ticket-field"><label>Bus Name</label><div class="val">{{ booking.bus_name }}</div></div>
+        <div class="ticket-field"><label>Service No.</label><div class="val">{{ booking.service_number }}</div></div>
+        <div class="ticket-field"><label>Bus No.</label><div class="val">{{ booking.bus_number }}</div></div>
+        <div class="ticket-field"><label>Bus Type</label><div class="val">{{ booking.bus_type }}</div></div>
+        <div class="ticket-field"><label>Travel Date</label><div class="val">{{ booking.travel_date }}</div></div>
+        <div class="ticket-field"><label>Departure</label><div class="val">{{ booking.departure_time }}</div></div>
+        <div class="ticket-field"><label>Arrival</label><div class="val">{{ booking.arrival_time }}</div></div>
+        <div class="ticket-field"><label>Passenger Name</label><div class="val">{{ booking.user_name }}</div></div>
+        <div class="ticket-field"><label>Contact</label><div class="val">{{ booking.user_mobile }}</div></div>
+      </div>
+
+      <h4 class="fw-600 mb-2" style="font-size:.88rem;">Seat Details</h4>
+      {% for s in seats %}
+      <div class="ticket-seat-row">
+        <strong>Seat {{ s.seat_number }}</strong>
+        <span>{{ s.passenger_name }}</span>
+        <span>Age: {{ s.passenger_age }}</span>
+        <span>{{ s.passenger_gender }}</span>
+        <span>{{ s.passenger_mobile }}</span>
+      </div>
+      {% endfor %}
+
+      <div class="ticket-row mt-2" style="margin-top:1.1rem;padding-top:1.1rem;border-top:1px dashed #e5e7eb;">
+        <div class="ticket-field"><label>Total Fare</label><div class="val text-orange">₹{{ booking.total_amount }}</div></div>
+        <div class="ticket-field"><label>Payment Method</label><div class="val">{{ booking.payment_method }}</div></div>
+        <div class="ticket-field"><label>Payment Status</label>
+          <div class="val">
+            {% if booking.payment_status == 'Paid' %}<span class="badge badge-success">Paid</span>
+            {% elif booking.payment_status == 'Pending' %}<span class="badge badge-warning">Pending</span>
+            {% else %}<span class="badge badge-danger">{{ booking.payment_status }}</span>{% endif %}
+          </div>
+        </div>
+        <div class="ticket-field"><label>Booking Status</label>
+          <div class="val">
+            {% if booking.booking_status == 'Confirmed' %}<span class="badge badge-success">Confirmed</span>
+            {% else %}<span class="badge badge-danger">Cancelled</span>{% endif %}
+          </div>
+        </div>
+        <div class="ticket-field"><label>Booked On</label><div class="val">{{ booking.booking_date.strftime('%d %b %Y') if booking.booking_date else '' }}</div></div>
+        <div class="ticket-field"><label>Ticket Issued</label><div class="val">{{ booking.generated_at.strftime('%d %b %Y') if booking.generated_at else 'N/A' }}</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

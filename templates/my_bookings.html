@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}My Bookings - Smart Bus Booking{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>My Bookings 🎫</h1>
+    <p>All your bus bookings in one place</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    {% if bookings %}
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Booking ID</th>
+            <th>Bus</th>
+            <th>Route</th>
+            <th>Travel Date</th>
+            <th>Seats</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in bookings %}
+          <tr>
+            <td><span class="badge badge-primary">{{ b.booking_code }}</span></td>
+            <td>{{ b.bus_name }}<br><small class="text-muted">{{ b.bus_number }}</small></td>
+            <td>{{ b.source }} → {{ b.destination }}</td>
+            <td>{{ b.travel_date }}<br><small class="text-muted">{{ b.departure_time }}</small></td>
+            <td>{{ b.seats }}</td>
+            <td><strong>₹{{ '%.2f'|format(b.total_amount) }}</strong></td>
+            <td>
+              {% if b.booking_status == 'Confirmed' %}
+                <span class="badge badge-success">Confirmed</span>
+              {% else %}
+                <span class="badge badge-danger">Cancelled</span>
+              {% endif %}
+            </td>
+            <td>
+              <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                <a href="{{ url_for('ticket', booking_code=b.booking_code) }}" class="btn btn-info btn-sm">
+                  🎫 Ticket
+                </a>
+                {% if b.booking_status == 'Confirmed' %}
+                <form method="POST" action="{{ url_for('cancel_booking', booking_id=b.booking_id) }}"
+                      onsubmit="return confirm('Are you sure you want to cancel this booking?');"
+                      style="display:inline;">
+                  <button type="submit" class="btn btn-danger btn-sm">❌ Cancel</button>
+                </form>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="icon">🎫</div>
+      <h3>No bookings yet</h3>
+      <p>You haven't made any bookings.</p>
+      <a href="{{ url_for('search_bus') }}" class="btn btn-primary mt-3">Search Buses</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

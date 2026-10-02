@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Welcome, {{ session.user_name }}</h1>
+    <p>Manage your trips and account from here</p>
+  </div>
+</div>
+<div class="container section">
+  <!-- Summary cards -->
+  <div class="grid-4 mb-4">
+    <div class="stat-card">
+      <div class="stat-icon orange">🚌</div>
+      <div class="stat-info"><h3>{{ summary.upcoming }}</h3><p>Upcoming Trips</p></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon blue">📋</div>
+      <div class="stat-info"><h3>{{ summary.total }}</h3><p>Total Bookings</p></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green">✅</div>
+      <div class="stat-info"><h3>{{ summary.active }}</h3><p>Confirmed</p></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon red">❌</div>
+      <div class="stat-info"><h3>{{ summary.cancelled }}</h3><p>Cancelled</p></div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="d-flex gap-2 mb-4">
+    <a href="{{ url_for('search') }}" class="btn btn-primary btn-lg">Search Buses</a>
+    <a href="{{ url_for('my_trips') }}" class="btn btn-blue btn-lg">My Trips</a>
+    <a href="{{ url_for('my_tickets') }}" class="btn btn-secondary btn-lg">My Tickets</a>
+    <a href="{{ url_for('profile') }}" class="btn btn-secondary btn-lg">Profile</a>
+  </div>
+
+  <!-- Recent bookings -->
+  <h2 class="fw-700 mb-2" style="font-size:1.05rem;">Recent Bookings</h2>
+  {% if recent %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Booking ID</th><th>Route</th><th>Bus</th><th>Travel Date</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        {% for b in recent %}
+        <tr>
+          <td><strong>{{ b.booking_code }}</strong></td>
+          <td>{{ b.source }} → {{ b.destination }}</td>
+          <td>{{ b.bus_name }}</td>
+          <td>{{ b.travel_date }}</td>
+          <td>₹{{ b.total_amount }}</td>
+          <td>
+            {% if b.booking_status == 'Confirmed' %}<span class="badge badge-success">Confirmed</span>
+            {% else %}<span class="badge badge-danger">Cancelled</span>{% endif %}
+          </td>
+          <td><a href="{{ url_for('ticket', booking_code=b.booking_code) }}" class="btn btn-blue btn-sm">Ticket</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state"><div class="icon">🎫</div><h3>No bookings yet</h3>
+    <a href="{{ url_for('search') }}" class="btn btn-primary mt-2">Search Buses</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Access Denied — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="container section text-center" style="padding-top:4rem;">
+  <div style="font-size:4rem;">🚫</div>
+  <h1 class="fw-700 mt-2" style="font-size:1.8rem;">Access Denied</h1>
+  <p class="text-muted mt-1 mb-3">You do not have permission to view this page. This area is restricted to administrators.</p>
+  <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">Go to Homepage</a>
+  {% if session.get('user_id') %}
+  <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-lg">My Dashboard</a>
+  {% else %}
+  <a href="{{ url_for('login') }}" class="btn btn-secondary btn-lg">Login</a>
+  {% endif %}
+</div>
+{% endblock %}

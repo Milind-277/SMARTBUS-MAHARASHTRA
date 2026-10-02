@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}My Trips — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>My Trips</h1>
+    <p>Your complete booking history</p>
+  </div>
+</div>
+<div class="container section">
+  {% if bookings %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Booking ID</th><th>Route</th><th>Travel Date</th>
+          <th>Bus</th><th>Seat(s)</th><th>Amount</th>
+          <th>Payment</th><th>Status</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bookings %}
+        <tr>
+          <td><strong>{{ b.booking_code }}</strong><br><small class="text-muted">{{ b.ticket_number or '' }}</small></td>
+          <td>{{ b.source }} → {{ b.destination }}</td>
+          <td>{{ b.travel_date }}<br><small class="text-muted">Dep: {{ b.departure_time }}</small></td>
+          <td>{{ b.bus_name }}<br><small class="text-muted">{{ b.service_number }}</small></td>
+          <td>{{ b.seats }}</td>
+          <td>₹{{ b.total_amount }}</td>
+          <td>
+            {% if b.payment_status == 'Paid' %}<span class="badge badge-success">Paid</span>
+            {% else %}<span class="badge badge-warning">Pending</span>{% endif %}
+            <br><small class="text-muted">{{ b.payment_method }}</small>
+          </td>
+          <td>
+            {% if b.booking_status == 'Confirmed' %}<span class="badge badge-success">Confirmed</span>
+            {% else %}<span class="badge badge-danger">Cancelled</span>{% endif %}
+          </td>
+          <td>
+            <a href="{{ url_for('ticket', booking_code=b.booking_code) }}" class="btn btn-blue btn-sm">View Ticket</a>
+            {% if b.booking_status == 'Confirmed' %}
+            <form method="POST" action="{{ url_for('cancel_booking', booking_id=b.booking_id) }}" style="display:inline;" onsubmit="return confirm('Cancel this booking?');">
+              <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="icon">🎫</div>
+    <h3>No bookings yet</h3>
+    <p class="text-muted mt-1">You have not made any bookings. Search for buses to get started.</p>
+    <a href="{{ url_for('search') }}" class="btn btn-primary mt-2">Search Buses</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

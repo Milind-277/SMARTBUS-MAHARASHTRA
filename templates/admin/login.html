@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login — SmartBus Maharashtra</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="auth-page" style="background:linear-gradient(135deg,#111827 0%,#1e4db7 100%);">
+  <div class="auth-card">
+    <div class="auth-logo">🛡</div>
+    <h2>Admin Login</h2>
+    <p class="sub">SmartBus Maharashtra — Administration</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}{% for cat,msg in messages %}<div class="alert alert-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('admin_login') }}">
+      <div class="form-group">
+        <label>Admin Email</label>
+        <input type="email" name="email" class="form-control" required placeholder="admin@smartbus.co.in" autofocus>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg btn-block">Sign In as Admin</button>
+    </form>
+    <p class="text-center mt-2" style="font-size:.82rem;color:#9ca3af;">Passenger login: <a href="{{ url_for('login') }}">click here</a></p>
+  </div>
+</div>
+</body>
+</html>

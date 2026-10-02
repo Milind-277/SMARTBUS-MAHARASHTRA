@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Bus Results - Smart Bus Booking{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Available Buses 🚌</h1>
+    <p>{{ source }} → {{ destination }} | {{ travel_date }}</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="d-flex justify-between align-center mb-3">
+      <h2 style="font-size:1.1rem; font-weight:600;">
+        {% if schedules %}
+          {{ schedules|length }} bus(es) found
+        {% else %}
+          No buses found
+        {% endif %}
+      </h2>
+      <a href="{{ url_for('search_bus') }}" class="btn btn-secondary btn-sm">← Search Again</a>
+    </div>
+
+    {% if schedules %}
+      {% for sch in schedules %}
+      <div class="bus-card">
+        <div style="flex:1;">
+          <div class="bus-card-route">{{ sch.source }} → {{ sch.destination }}</div>
+          <div class="bus-card-meta">
+            🚌 {{ sch.bus_name }} ({{ sch.bus_number }}) &nbsp;|&nbsp;
+            <span class="badge badge-info">{{ sch.bus_type }}</span>
+          </div>
+          <div class="bus-card-meta mt-1">
+            📅 {{ sch.travel_date }} &nbsp;|&nbsp;
+            📏 {{ sch.distance }} km &nbsp;|&nbsp;
+            ⏱ {{ sch.duration }}
+          </div>
+        </div>
+
+        <div style="text-align:center; padding: 0 1.5rem; border-left:1px dashed var(--gray-300); border-right:1px dashed var(--gray-300);">
+          <div class="bus-card-time">{{ sch.departure_time }}</div>
+          <div style="color:var(--gray-300); font-size:0.75rem; margin:0.25rem 0;">──────▶</div>
+          <div class="bus-card-time">{{ sch.arrival_time }}</div>
+        </div>
+
+        <div style="text-align:center; min-width:140px;">
+          <div class="bus-card-fare">₹{{ '%.0f'|format(sch.fare) }}</div>
+          <div style="font-size:0.8rem; margin-bottom:0.75rem;">
+            {% if sch.available_seats > 0 %}
+              <span style="color:var(--success); font-weight:600;">{{ sch.available_seats }} seats available</span>
+            {% else %}
+              <span style="color:var(--danger); font-weight:600;">Fully Booked</span>
+            {% endif %}
+          </div>
+          {% if sch.available_seats > 0 %}
+            {% if session.get('user_id') %}
+              <a href="{{ url_for('select_seats', schedule_id=sch.schedule_id) }}" class="btn btn-primary btn-sm">
+                Book Now →
+              </a>
+            {% else %}
+              <a href="{{ url_for('login') }}" class="btn btn-outline btn-sm">Login to Book</a>
+            {% endif %}
+          {% else %}
+            <button class="btn btn-secondary btn-sm" disabled>Fully Booked</button>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <div class="icon">😕</div>
+        <h3>No buses found</h3>
+        <p>No buses are available for <strong>{{ source }} → {{ destination }}</strong> on <strong>{{ travel_date }}</strong>.</p>
+        <a href="{{ url_for('search_bus') }}" class="btn btn-primary mt-3">Search Again</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

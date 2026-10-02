@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Review Booking — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Review Your Booking</h1>
+    <p>Step 4 of 5 — Confirm your details before payment</p>
+  </div>
+</div>
+<div class="container section">
+  <div class="steps mb-3">
+    <div class="step done">1. Search</div>
+    <div class="step done">2. Select Seats</div>
+    <div class="step done">3. Passenger Details</div>
+    <div class="step active">4. Review</div>
+    <div class="step">5. Payment</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 360px;gap:1.5rem;align-items:start;">
+    <div class="card">
+      <div class="card-header">Journey Details</div>
+      <div class="card-body">
+        <div class="sum-row"><span>Route</span><strong>{{ schedule.source }} → {{ schedule.destination }}</strong></div>
+        <div class="sum-row"><span>Bus</span><strong>{{ schedule.bus_name }} ({{ schedule.service_number }})</strong></div>
+        <div class="sum-row"><span>Type</span><strong>{{ schedule.bus_type }}</strong></div>
+        <div class="sum-row"><span>Date</span><strong>{{ schedule.travel_date }}</strong></div>
+        <div class="sum-row"><span>Departure</span><strong>{{ schedule.departure_time }}</strong></div>
+        <div class="sum-row"><span>Arrival</span><strong>{{ schedule.arrival_time }}</strong></div>
+        <hr style="margin:0.9rem 0;border:none;border-top:1px dashed #e5e7eb;">
+        <h4 class="fw-600 mb-2" style="font-size:0.9rem;">Passengers</h4>
+        {% for seat in selected_seats %}
+          {% set p = passengers[seat] %}
+          <div class="ticket-seat-row">
+            <span><strong>Seat {{ seat }}</strong></span>
+            <span>{{ p.name }}</span>
+            <span>{{ p.age }} yrs, {{ p.gender }}</span>
+            <span>{{ p.mobile }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div>
+      <div class="summary-box mb-3">
+        <div class="sum-row"><span>Fare per seat</span><span>₹{{ schedule.fare }}</span></div>
+        <div class="sum-row"><span>Seats</span><span>{{ selected_seats|length }}</span></div>
+        <div class="sum-row sum-total"><span>Total Amount</span><span>₹{{ total_amount }}</span></div>
+      </div>
+      <form method="POST" action="{{ url_for('payment') }}">
+        <input type="hidden" name="schedule_id" value="{{ schedule.schedule_id }}">
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Proceed to Payment</button>
+      </form>
+      <a href="{{ url_for('select_seats', schedule_id=schedule.schedule_id) }}" class="btn btn-secondary btn-block mt-2">Change Seats</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

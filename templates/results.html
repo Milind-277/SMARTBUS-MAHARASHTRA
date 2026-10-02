@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Bus Results — {{ source }} to {{ destination }} — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>{{ source }} → {{ destination }}</h1>
+    <p>{{ travel_date }} &nbsp;·&nbsp; {{ schedules|length }} bus(es) found</p>
+  </div>
+</div>
+<div class="container section">
+  {% if schedules %}
+    {% for s in schedules %}
+    <div class="bus-card">
+      <div style="flex:1;">
+        <div class="bus-route">{{ s.source }} → {{ s.destination }}</div>
+        <div class="bus-meta">
+          <strong>{{ s.bus_name }}</strong> &nbsp;·&nbsp;
+          {{ s.service_number }} &nbsp;·&nbsp;
+          <span class="badge badge-blue">{{ s.bus_type }}</span>
+        </div>
+      </div>
+      <div class="bus-time" style="text-align:center;min-width:110px;">
+        <div style="font-size:1.1rem;font-weight:700;">{{ s.departure_time }}</div>
+        <div class="text-muted" style="font-size:0.75rem;">{{ s.duration }}</div>
+        <div style="font-size:1.1rem;font-weight:700;">{{ s.arrival_time }}</div>
+      </div>
+      <div style="text-align:center;min-width:90px;">
+        <div class="bus-fare">₹{{ s.fare }}</div>
+        <div class="text-muted" style="font-size:0.78rem;">{{ s.available_seats }} seats left</div>
+      </div>
+      <div>
+        {% if session.get('user_id') %}
+          {% if s.available_seats > 0 %}
+            <a href="{{ url_for('select_seats', schedule_id=s.schedule_id) }}" class="btn btn-primary">Select Seats</a>
+          {% else %}
+            <span class="btn btn-secondary" style="cursor:default;">Sold Out</span>
+          {% endif %}
+        {% else %}
+          <a href="{{ url_for('login') }}" class="btn btn-outline">Login to Book</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">
+      <div class="icon">🚌</div>
+      <h3>No buses found</h3>
+      <p class="text-muted mt-1">No buses available for this route and date. Try a different date.</p>
+      <a href="{{ url_for('search') }}" class="btn btn-primary mt-2">Search Again</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

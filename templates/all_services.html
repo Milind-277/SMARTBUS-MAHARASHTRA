@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}All Bus Services — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>All Bus Services</h1>
+    <p>Browse bus services across Maharashtra and select a route to book tickets.</p>
+  </div>
+</div>
+<div class="container section">
+  
+  <div class="card" style="padding:1.5rem; margin-bottom: 2rem;">
+    <h3 style="margin-top:0;">Filter Services</h3>
+    <form method="GET" action="{{ url_for('all_services') }}" style="display:flex; gap:1rem; align-items:flex-end; flex-wrap:wrap;">
+      <div style="flex:1; min-width:200px;">
+        <label>From</label>
+        <select name="source" class="form-control">
+          <option value="">Any Location</option>
+          {% for d in districts %}
+            <option value="{{ d }}" {% if request.args.get('source') == d %}selected{% endif %}>{{ d }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div style="flex:1; min-width:200px;">
+        <label>To</label>
+        <select name="destination" class="form-control">
+          <option value="">Any Location</option>
+          {% for d in districts %}
+            <option value="{{ d }}" {% if request.args.get('destination') == d %}selected{% endif %}>{{ d }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a href="{{ url_for('all_services') }}" class="btn btn-outline">Clear</a>
+      </div>
+    </form>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Route</th>
+          <th>Departure</th>
+          <th>Arrival</th>
+          <th>Fare</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in services %}
+        <tr>
+          <td>
+            <strong>{{ s.bus_name }}</strong><br>
+            <span class="text-muted" style="font-size:0.85rem;">{{ s.service_number }} ({{ s.bus_type }})</span>
+          </td>
+          <td>
+            <strong>{{ s.source }} &rarr; {{ s.destination }}</strong><br>
+            <span class="text-muted" style="font-size:0.85rem;">Next Date: {{ s.next_date }}</span>
+          </td>
+          <td>{{ s.departure_time }}</td>
+          <td>{{ s.arrival_time }}</td>
+          <td>₹{{ s.fare }}</td>
+          <td>
+            <form action="{{ url_for('search') }}" method="POST" style="margin:0;">
+              <input type="hidden" name="source" value="{{ s.source }}">
+              <input type="hidden" name="destination" value="{{ s.destination }}">
+              <input type="hidden" name="travel_date" value="{{ s.next_date }}">
+              <button type="submit" class="btn btn-primary btn-sm">Check Seats</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6" style="text-align:center; padding:2rem;">No services found matching your filter.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

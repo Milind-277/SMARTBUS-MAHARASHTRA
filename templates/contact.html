@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Contact — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container"><h1>Contact & Support</h1><p>We are here to help with your queries</p></div>
+</div>
+<div class="container section">
+  <div class="grid-2">
+    <div>
+      <div class="card">
+        <div class="card-header">Send a Message</div>
+        <div class="card-body">
+          <form method="POST" action="{{ url_for('contact') }}">
+            <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" name="name" class="form-control" required placeholder="Full name">
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" name="email" class="form-control" required placeholder="you@example.com">
+            </div>
+            <div class="form-group">
+              <label>Message</label>
+              <textarea name="message" class="form-control" rows="5" required placeholder="Describe your query..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-header">Contact Information</div>
+        <div class="card-body">
+          <p class="mb-3 text-muted" style="font-size:.88rem;">For booking assistance, complaints or general queries, you can reach our support team through the contact form or the details below.</p>
+          <div class="mb-2"><strong>Support Email</strong><br><span class="text-muted">support@smartbusmh.in</span></div>
+          <div class="mb-2"><strong>Support Hours</strong><br><span class="text-muted">Monday – Saturday, 8:00 AM to 8:00 PM</span></div>
+          <div class="mb-2"><strong>Phone</strong><br><span class="text-muted">+91 98000 00000 (Sample)</span></div>
+          <div class="mb-2"><strong>State Coverage</strong><br><span class="text-muted">All 36 districts of Maharashtra</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

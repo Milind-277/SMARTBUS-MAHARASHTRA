@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}My Tickets — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>My Tickets</h1>
+    <p>View and print all your tickets</p>
+  </div>
+</div>
+<div class="container section">
+  {% if tickets %}
+  <div style="display:flex;flex-direction:column;gap:1rem;">
+    {% for t in tickets %}
+    <div class="card" style="border-left:4px solid {% if t.ticket_status == 'Cancelled' %}#dc2626{% elif t.travel_date < today %}#6b7280{% else %}#16a34a{% endif %};">
+      <div class="card-body" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+        <div>
+          <div class="fw-700">{{ t.source }} → {{ t.destination }}</div>
+          <div class="text-muted" style="font-size:0.82rem;">{{ t.bus_name }} · {{ t.service_number }}</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="fw-600">{{ t.travel_date }}</div>
+          <div class="text-muted" style="font-size:0.78rem;">Travel Date</div>
+        </div>
+        <div>
+          <div>{{ t.ticket_number }}</div>
+          <div class="text-muted" style="font-size:0.78rem;">{{ t.booking_code }}</div>
+        </div>
+        <div>
+          {% if t.ticket_status == 'Cancelled' or t.booking_status == 'Cancelled' %}
+            <span class="badge badge-danger">Cancelled</span>
+          {% elif t.travel_date < today %}
+            <span class="badge badge-gray">Completed</span>
+          {% else %}
+            <span class="badge badge-success">Upcoming</span>
+          {% endif %}
+        </div>
+        <a href="{{ url_for('ticket', booking_code=t.booking_code) }}" class="btn btn-primary btn-sm">View Ticket</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="icon">🎫</div>
+    <h3>No tickets yet</h3>
+    <p class="text-muted mt-1">Complete a booking to receive your ticket here.</p>
+    <a href="{{ url_for('search') }}" class="btn btn-primary mt-2">Search Buses</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

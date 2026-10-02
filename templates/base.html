@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SmartBus Maharashtra — Book bus journeys across Maharashtra with simple search, seat selection and easy ticket management.">
+  <title>{% block title %}SmartBus Maharashtra{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="{{ url_for('index') }}" class="navbar-brand">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+    SmartBus <span class="sub">Maharashtra</span>
+  </a>
+  <ul class="navbar-nav">
+    <li><a href="{{ url_for('index') }}" class="nav-link">Home</a></li>
+    <li><a href="{{ url_for('search') }}" class="nav-link">Search Buses</a></li>
+    <li><a href="{{ url_for('all_services') }}" class="nav-link">All Services</a></li>
+    {% if session.get('user_id') %}
+      <li><a href="{{ url_for('my_trips') }}" class="nav-link">My Trips</a></li>
+    {% endif %}
+    <li><a href="{{ url_for('about') }}" class="nav-link">About</a></li>
+    <li><a href="{{ url_for('contact') }}" class="nav-link">Contact</a></li>
+    {% if session.get('user_id') %}
+      <li><a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a></li>
+      <li><a href="{{ url_for('my_tickets') }}" class="nav-link">My Tickets</a></li>
+      <li><a href="{{ url_for('profile') }}" class="nav-link">Profile</a></li>
+      <li><a href="{{ url_for('logout') }}" class="btn-nav">Logout</a></li>
+    {% else %}
+      <li><a href="{{ url_for('login') }}" class="nav-link">Login</a></li>
+      <li><a href="{{ url_for('register') }}" class="btn-nav">Register</a></li>
+    {% endif %}
+  </ul>
+</nav>
+
+<div class="container" style="padding-top:1rem;">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for cat, msg in messages %}
+      <div class="alert alert-{{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+</div>
+
+{% block content %}{% endblock %}
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h5>SmartBus Maharashtra</h5>
+        <p>Simple bus booking for journeys across Maharashtra. Search buses, select seats and manage your trips online.</p>
+      </div>
+      <div>
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="{{ url_for('index') }}">Home</a></li>
+          <li><a href="{{ url_for('search') }}">Search Buses</a></li>
+          <li><a href="{{ url_for('all_services') }}">All Services</a></li>
+          <li><a href="{{ url_for('about') }}">About</a></li>
+          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Account</h5>
+        <ul>
+          {% if session.get('user_id') %}
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('my_trips') }}">My Trips</a></li>
+            <li><a href="{{ url_for('profile') }}">Profile</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+          {% else %}
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('register') }}">Register</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 SmartBus Maharashtra. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

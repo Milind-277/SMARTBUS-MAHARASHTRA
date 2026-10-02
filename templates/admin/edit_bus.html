@@ -1,0 +1,33 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Edit Bus — Admin — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-actions">
+  <h2>Edit Bus</h2>
+  <a href="{{ url_for('admin_buses') }}" class="btn btn-secondary">&larr; Back</a>
+</div>
+<div class="card" style="max-width:600px;">
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('admin_edit_bus', bus_id=bus.bus_id) }}">
+      <div class="form-group"><label>Service Number</label><input name="service_number" class="form-control" value="{{ bus.service_number }}" required></div>
+      <div class="form-group"><label>Bus Number</label><input name="bus_number" class="form-control" value="{{ bus.bus_number }}" required></div>
+      <div class="form-group"><label>Bus Name</label><input name="bus_name" class="form-control" value="{{ bus.bus_name }}" required></div>
+      <div class="form-group"><label>Bus Type</label>
+        <select name="bus_type" class="form-control">
+          {% for t in ['Ordinary','Express','AC Seater','Semi Sleeper','Sleeper'] %}
+            <option {{ 'selected' if bus.bus_type==t else '' }}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group"><label>Total Seats</label><input type="number" name="total_seats" class="form-control" value="{{ bus.total_seats }}"></div>
+      <div class="form-group"><label>Status</label>
+        <select name="status" class="form-control">
+          <option {{ 'selected' if bus.status=='Active' else '' }}>Active</option>
+          <option {{ 'selected' if bus.status=='Inactive' else '' }}>Inactive</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Update Bus</button>
+      <a href="{{ url_for('admin_buses') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

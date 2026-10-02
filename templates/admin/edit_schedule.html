@@ -1,0 +1,29 @@
+{% extends 'admin/base_admin.html' %}
+{% block title %}Edit Schedule — Admin — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-actions">
+  <h2>Edit Schedule</h2>
+  <a href="{{ url_for('admin_schedules') }}" class="btn btn-secondary">&larr; Back</a>
+</div>
+<div class="card" style="max-width:580px;">
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('admin_edit_schedule', schedule_id=schedule.schedule_id) }}">
+      <div class="form-group"><label>Bus</label>
+        <select name="bus_id" class="form-control">
+          {% for b in buses %}<option value="{{ b.bus_id }}" {{ 'selected' if schedule.bus_id==b.bus_id else '' }}>{{ b.service_number }} — {{ b.bus_name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="form-group"><label>Route</label>
+        <select name="route_id" class="form-control">
+          {% for r in routes %}<option value="{{ r.route_id }}" {{ 'selected' if schedule.route_id==r.route_id else '' }}>{{ r.source }} → {{ r.destination }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="form-group"><label>Travel Date</label><input type="date" name="travel_date" class="form-control" value="{{ schedule.travel_date }}"></div>
+      <div class="form-group"><label>Departure Time</label><input type="time" name="departure_time" class="form-control" value="{{ schedule.departure_time }}"></div>
+      <div class="form-group"><label>Arrival Time</label><input type="time" name="arrival_time" class="form-control" value="{{ schedule.arrival_time }}"></div>
+      <button type="submit" class="btn btn-primary">Update Schedule</button>
+      <a href="{{ url_for('admin_schedules') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

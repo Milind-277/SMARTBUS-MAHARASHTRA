@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Search Buses — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Search Buses</h1>
+    <p>Find buses between any two Maharashtra districts</p>
+  </div>
+</div>
+<div class="container section">
+  <div class="card" style="max-width:580px;margin:0 auto;">
+    <div class="card-header">Bus Search</div>
+    <div class="card-body">
+      <form action="{{ url_for('search') }}" method="POST">
+        <div class="form-group">
+          <label>From (Origin)</label>
+          <input name="source" class="form-control" list="dl" placeholder="e.g. Nashik" required>
+        </div>
+        <div class="form-group">
+          <label>To (Destination)</label>
+          <input name="destination" class="form-control" list="dl" placeholder="e.g. Pune" required>
+        </div>
+        <div class="form-group">
+          <label>Travel Date</label>
+          <input name="travel_date" type="date" class="form-control" required>
+        </div>
+        <datalist id="dl">
+          {% for d in districts %}<option value="{{ d }}">{% endfor %}
+        </datalist>
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Search Buses</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

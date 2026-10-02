@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Booking Confirmed — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="container section">
+  <div style="max-width:700px;margin:0 auto;text-align:center;">
+    <div style="font-size:3.5rem;margin-bottom:0.75rem;">✅</div>
+    <h1 class="fw-700" style="font-size:1.9rem;color:#16a34a;">Booking Confirmed!</h1>
+    <p class="text-muted mt-1 mb-3">Your seat(s) have been reserved. A ticket has been generated.</p>
+  </div>
+
+  <div class="ticket-wrap" style="max-width:700px;margin:0 auto;">
+    <div class="ticket-header">
+      <div>
+        <h2>SmartBus Maharashtra</h2>
+        <p style="opacity:.8;font-size:.83rem;margin-top:.2rem;">Booking Confirmation</p>
+      </div>
+      <div class="ticket-id">{{ booking.booking_code }}</div>
+    </div>
+    <div class="ticket-body">
+      <div class="ticket-route">
+        {{ booking.source }} <span style="font-size:0.7em;font-weight:400;color:#6b7280;">→</span> {{ booking.destination }}
+      </div>
+      <div class="ticket-row">
+        <div class="ticket-field"><label>Bus</label><div class="val">{{ booking.bus_name }}</div></div>
+        <div class="ticket-field"><label>Service No.</label><div class="val">{{ booking.service_number }}</div></div>
+        <div class="ticket-field"><label>Bus Type</label><div class="val">{{ booking.bus_type }}</div></div>
+        <div class="ticket-field"><label>Travel Date</label><div class="val">{{ booking.travel_date }}</div></div>
+        <div class="ticket-field"><label>Departure</label><div class="val">{{ booking.departure_time }}</div></div>
+        <div class="ticket-field"><label>Arrival</label><div class="val">{{ booking.arrival_time }}</div></div>
+      </div>
+      <h4 class="fw-600 mb-2" style="font-size:0.88rem;">Passengers & Seats</h4>
+      {% for s in seats %}
+      <div class="ticket-seat-row">
+        <strong>Seat {{ s.seat_number }}</strong>
+        <span>{{ s.passenger_name }}</span>
+        <span>{{ s.passenger_age }} yrs, {{ s.passenger_gender }}</span>
+      </div>
+      {% endfor %}
+      <div class="ticket-row mt-2" style="margin-top:1rem;padding-top:1rem;border-top:1px dashed #e5e7eb;">
+        <div class="ticket-field"><label>Total Amount</label><div class="val text-orange">₹{{ booking.total_amount }}</div></div>
+        <div class="ticket-field"><label>Payment Method</label><div class="val">{{ booking.payment_method }}</div></div>
+        <div class="ticket-field"><label>Payment Status</label>
+          <div class="val">
+            {% if booking.payment_status == 'Paid' %}<span class="badge badge-success">Paid</span>
+            {% else %}<span class="badge badge-warning">Pending</span>{% endif %}
+          </div>
+        </div>
+      </div>
+      {% if booking.ticket_number %}
+      <div class="text-muted mt-2" style="font-size:0.82rem;">Ticket No: <strong>{{ booking.ticket_number }}</strong></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:1.5rem;display:flex;gap:1rem;justify-content:center;">
+    <a href="{{ url_for('ticket', booking_code=booking.booking_code) }}" class="btn btn-primary btn-lg">View Full Ticket</a>
+    <a href="{{ url_for('my_trips') }}" class="btn btn-secondary btn-lg">My Trips</a>
+    <a href="{{ url_for('search') }}" class="btn btn-outline btn-lg">Book Another</a>
+  </div>
+</div>
+{% endblock %}

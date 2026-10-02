@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Passenger Details — SmartBus Maharashtra{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Passenger Details</h1>
+    <p>Step 3 of 5 — Enter details for each passenger</p>
+  </div>
+</div>
+<div class="container section">
+  <div class="steps mb-3">
+    <div class="step done">1. Search</div>
+    <div class="step done">2. Select Seats</div>
+    <div class="step active">3. Passenger Details</div>
+    <div class="step">4. Review</div>
+    <div class="step">5. Payment</div>
+  </div>
+  <form method="POST" action="{{ url_for('review_booking') }}">
+    <input type="hidden" name="schedule_id" value="{{ schedule.schedule_id }}">
+    {% for seat in selected_seats %}
+    <div class="passenger-block">
+      <h4>Seat {{ seat }}</h4>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Passenger Name</label>
+          <input type="text" name="p_name_{{ seat }}" class="form-control" required placeholder="Full name">
+        </div>
+        <div class="form-group">
+          <label>Age</label>
+          <input type="number" name="p_age_{{ seat }}" class="form-control" required min="1" max="110" placeholder="Age">
+        </div>
+        <div class="form-group">
+          <label>Gender</label>
+          <select name="p_gender_{{ seat }}" class="form-control">
+            <option>Male</option><option>Female</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mobile</label>
+          <input type="tel" name="p_mobile_{{ seat }}" class="form-control" pattern="[0-9]{10}" placeholder="10-digit mobile">
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    <div class="summary-box mb-3">
+      <div class="sum-row"><span>Route</span><strong>{{ schedule.source }} → {{ schedule.destination }}</strong></div>
+      <div class="sum-row"><span>Date</span><strong>{{ schedule.travel_date }}</strong></div>
+      <div class="sum-row"><span>Seats</span><strong>{{ selected_seats|join(', ') }}</strong></div>
+      <div class="sum-row sum-total"><span>Total</span><strong>₹{{ total_amount }}</strong></div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg">Review Booking</button>
+    <a href="{{ url_for('select_seats', schedule_id=schedule.schedule_id) }}" class="btn btn-secondary btn-lg">Back</a>
+  </form>
+</div>
+{% endblock %}
